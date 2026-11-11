@@ -1,0 +1,228 @@
+<!DOCTYPE HTML>
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+    <title>Why do voltammograms look like that?</title>
+
+    <meta name="author" content="Matthew J. Liu">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend+Deca:wght@300;400;500&family=Lato:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="../../modern.css">
+    <script>
+      MathJax = {
+        loader: {load: ['[tex]/mhchem', '[tex]/boldsymbol']},
+        tex: {
+          packages: {'[+]': ['mhchem', 'boldsymbol']},
+          tags: 'none',
+          inlineMath: [['$', '$'], ['\\(', '\\)']]
+        },
+        chtml: {scale: window.matchMedia('(max-width: 640px)').matches ? 0.85 : 1}
+      };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+  </head>
+
+  <body>
+    <nav class="nav">
+      <div class="wrap">
+        <a class="brand" href="../../">Matthew J. Liu</a>
+        <ul>
+          <li><a href="../../#news">News</a></li>
+          <li><a href="../">Notes</a></li>
+          <li><a href="../../#papers">Papers</a></li>
+          <li><a href="../../data/MatthewLiu-CV.pdf">CV</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <main class="article">
+      <p class="eyebrow">Electrochemistry notes</p>
+      <h1>Why do voltammograms look like that?</h1>
+      <p class="meta">November 2026</p>
+
+<p>Cyclic voltammetry (CV) is the lynchpin of electroanalysis, in which the electrode potential is swept to a switching potential and back. The recorded current, plotted against potential, yields the characteristic <a href="https://doi.org/10.1021/acs.jchemed.7b00361">duck-shaped trace</a> familiar to every electrochemist. Nearly everything about the electrochemical reaction is encoded in the nuances of that waveform: the rate of mass transport to the electrode, the kinetics of heterogeneous electron transfer, and even the very sequence of electron-transfer and homogeneous chemical steps. Yet the waveform is rarely derived from first principles. Why does the current rise, peak, and then decay? And why does the reverse scan mirror the forward one?</p>
+<p>This note derives the equations for the forward and reverse scan of a single reversible electron transfer limited by diffusion. Fundamental properties such as peak height, peak position, and the canonical 57 mV peak separation follow directly from semi-infinite diffusion and Nernstian electron transfer. The rise and fall of the current reflects a competition between two processes. Nernstian electron transfer converts an increasing fraction of reactant at the electrode surface as the potential is swept past the standard potential, while semi-infinite diffusion replenishes reactant across a depletion layer that grows with time. Meanwhile, the reverse scan mirrors the forward scan because the governing equations are linear in concentration and the Nernstian fractions of reactant and product are mirror images about the standard potential. In effect, the product on the return sweep behaves exactly as the reactant did on the forward sweep, once the decaying forward current is subtracted. <a href="#sec1">Section 1</a> formalizes the foregoing arguments, yielding the Randles–Ševčík equation. Then, a notable insight falls out in <a href="#sec2">Section 2</a>: the current in this transient technique is related, through a convolution, to the steady-state currents measured at rotating disk electrodes (RDEs) and ultramicroelectrodes (UMEs).</p>
+<p>A key fact to remember through this derivation is that a product in Laplace space is a convolution in real space. The convolution theorem is what ties the surface concentrations of oxidant and reductant to the convolution of the current $i$ with $(\pi t)^{-0.5}$, and in turn the CV to the RDE. Overall, the derivation streamlines material from Bard and Faulkner and from Sav&eacute;ant and Costentin. I wrote this up in grad school after many hours poring over those textbooks &ndash; I hope it saves you the trouble, enjoy!</p>
+<nav class="toc"><p class="toc-title">Contents</p><ul><li class="toc2"><a href="#sec1">1. Cyclic Voltammetry of Nernstian Systems: Single-Electron Transfer</a></li><li class="toc3"><a href="#sec1-1">1.1 Dimensional Governing Equations for Forward (Reductive) Scan</a></li><li class="toc3"><a href="#sec1-2">1.2 Dimensionless Governing Equations for Forward Scan</a></li><li class="toc3"><a href="#sec1-3">1.3 Solving for the Integral Relation of the Current</a></li><li class="toc3"><a href="#sec1-4">1.4 Fick's Law vs. Nernst-Planck</a></li><li class="toc2"><a href="#sec2">2. Convolution of CVs</a></li><li class="toc3"><a href="#sec2-1">2.1 Derivation of Convolutive Manipulation</a></li><li class="toc3"><a href="#sec2-2">2.2 Plotting the Convolved Voltammogram</a></li></ul></nav>
+<h2 id="sec1">1. Cyclic Voltammetry of Nernstian Systems: Single-Electron Transfer</h2>
+<p>Consider a redox couple that undergoes single outer-sphere<sup class="fnmark"><a href="#fn1" id="fnref1">&dagger;</a></sup> electron transfer:</p>
+<div class="eq">\[\ce{A + e^- <=> B}\]</div>
+<p>Examples of species A include ferricyanide, ferrocenium, and hexaammineruthenium(III). Let's assume that our concentration of supporting electrolyte is more than 100 times that of the analyte (such that we mitigate electromigration of the analyte) and are using a scan rate $>$ several mV/s (such that we avoid natural convection). Then the Nernst-Planck equation can be approximated with Fick's Law (Bard and Faulkner, Section 4.1, for the Nernst-Planck equation). We assume that we're using a planar electrode of characteristic size $>>$ the diffusion layer thickness. Since the latter is on the order of microns, the electrode should roughly be on the order of millimeters. The use of a &ldquo;large&rdquo; electrode lets us assume 1D linear diffusion. Lastly, the electrode is immersed in a large reservoir of electrolyte ($>$ several mL). We use the older polarographic convention for the derivation, to stay consistent with how these equations were originally derived. In this convention, cathodic currents are positive, and cathodic potentials are plotted to the right of the standard potential.</p>
+<h3 id="sec1-1">1.1 Dimensional Governing Equations for Forward (Reductive) Scan</h3>
+<p>The governing equations for our system are Fick's second law applied to species $A$ and $B$:</p>
+<div class="eq" id="eq-1-1">\[\frac{\partial c_A}{\partial t} = D \frac{\partial ^2 c_A}{\partial x^2}\tag{1.1}\]</div>
+
+<div class="eq" id="eq-1-2">\[\frac{\partial c_B}{\partial t} = D \frac{\partial ^2 c_B}{\partial x^2}\tag{1.2}\]</div>
+<p>Where $D$ is the diffusion coefficient for species $A$ and $B$ (assumed to be the same for both species). Note that $D$ contains information on the activity coefficient for species $A$ and $B$. We don't necessarily assume that the activity coefficient is unity, we just assume that it is constant within the diffusion layer. From conservation of flux at the electrode surface, we have:</p>
+<div class="eq" id="eq-1-3">\[\frac{\partial c_A}{\partial x} + \frac{\partial c_B}{\partial x} = 0, \quad x=0, t \geq 0\tag{1.3}\]</div>
+<p>Meanwhile, the Nernst equation and Faraday's law give, respectively:</p>
+<div class="eq" id="eq-1-4">\[c_A = c_B \text{exp}\left(f(E-E^{0})\right), \quad x=0, t \geq 0\tag{1.4}\]</div>
+
+<div class="eq" id="eq-1-5">\[\frac{j}{F}=D \left( \frac{\partial c_A}{\partial x} \right)\biggr\rvert_{x = 0} = -D \left( \frac{\partial c_B}{\partial x} \right)\biggr\rvert_{x = 0}\tag{1.5}\]</div>
+<p>Note that the electrode potential varies with time. We start with a reductive scan, and then at time $t_s$ we hit the switching potential and reverse the direction of the scan to drive oxidation.</p>
+<div class="eq" id="eq-1-6">\[E = E_i - \nu t, \quad 0 \leq t \leq t_s\tag{1.6}\]</div>
+
+<div class="eq" id="eq-1-7">\[E = E_s + \nu (t-t_s), \quad t_s \leq t \leq 2t_s\tag{1.7}\]</div>
+<div class="table-wrap"><table class="vars"><thead><tr><th>Variable</th><th>Meaning</th><th>Variable</th><th>Meaning</th></tr></thead><tbody>
+<tr><td>$c_A$</td><td>Concentration of species $A$</td><td>$c_B$</td><td>Concentration of species $B$</td></tr>
+<tr><td>$x$</td><td>Distance from electrode surface</td><td>$D_A = D_B = D$</td><td>Diffusion coefficient</td></tr>
+<tr><td>$t$</td><td>Time elapsed in the CV</td><td>$f = F/RT$</td><td>Inverted thermal voltage</td></tr>
+<tr><td>$E$</td><td>Working electrode potential</td><td>$E^{0}$</td><td>Standard potential of the redox pair $A/B$ (unity activity coefficients)</td></tr>
+<tr><td>$i$</td><td>Current, cathodic positive (plots in <a href="#sec2-2">Section 2.2</a> use the IUPAC convention)</td><td>$j$</td><td>Current density</td></tr>
+<tr><td>$F$</td><td>Faraday constant</td><td>$E_i$</td><td>Initial potential</td></tr>
+<tr><td>$E_s$</td><td>Switching potential</td><td>$t_s$</td><td>Time at which scan is reversed</td></tr>
+<tr><td>$\nu$</td><td>Scan rate</td><td>$\eta$</td><td>Integration variable</td></tr>
+</tbody></table></div>
+<h3 id="sec1-2">1.2 Dimensionless Governing Equations for Forward Scan</h3>
+<p>We technically don't have to nondimensionalize to solve, but dimensionless equations are helpful in many ways. List of dimensionless variables:</p>
+<div class="eq" id="eq-1-8">\[\tau = f \nu t\tag{1.8}\]</div>
+
+<div class="eq" id="eq-1-9">\[\tau_s = f (E_i - E_s) = u_i - u_f\tag{1.9}\]</div>
+
+<div class="eq" id="eq-1-10">\[u_i = f(E_i - E^{0}) >> 0\tag{1.10}\]</div>
+
+<div class="eq" id="eq-1-11">\[u_f = f(E_s - E^{0}) << 0\tag{1.11}\]</div>
+
+<div class="eq" id="eq-1-12">\[\xi = -f(E - E^{0})\tag{1.12}\]</div>
+
+<div class="eq" id="eq-1-13">\[y = x \left( \frac{f \nu}{D} \right)^{0.5}\tag{1.13}\]</div>
+
+<div class="eq" id="eq-1-14">\[a = \frac{c_A}{c_{A, bulk}}\tag{1.14}\]</div>
+
+<div class="eq" id="eq-1-15">\[b = \frac{c_B}{c_{A, bulk}}\tag{1.15}\]</div>
+
+<div class="eq" id="eq-1-16">\[\psi = \frac{j}{Fc_{A, bulk}\left(f \nu D \right)^{0.5}}\tag{1.16}\]</div>
+<p>Fick's law applied to species $A$ and $B$ with our dimensionless variables becomes:</p>
+<div class="eq" id="eq-1-17">\[\frac{\partial a}{\partial \tau} = \frac{\partial^2 a}{\partial y^2}\tag{1.17}\]</div>
+
+<div class="eq" id="eq-1-18">\[\frac{\partial b}{\partial \tau} = \frac{\partial^2 b}{\partial y^2}\tag{1.18}\]</div>
+<p>Note that $a=1$ and $b=0$ everywhere in the domain $y$ for $\tau = 0$, i.e., before beginning our CV, our analyte is completely in the form of species $A$. Conservation of flux at the electrode surface becomes:</p>
+<div class="eq" id="eq-1-19">\[\frac{\partial a}{\partial y} + \frac{\partial b}{\partial y} = 0, \quad y=0, \tau \geq 0\tag{1.19}\]</div>
+<p>The Nernst equation is:</p>
+<div class="eq" id="eq-1-20">\[\frac{a}{b} = \text{exp}(-\xi), \quad y=0, \tau \geq 0\tag{1.20}\]</div>
+<p>And since $a+b=1$ at the surface $y=0$, we can use the Nernst equation to find that</p>
+<div class="eq" id="eq-1-21">\[a\rvert_{y = 0} = \frac{\text{exp}\left( -\xi \right)}{1+\text{exp}\left( -\xi \right)}\tag{1.21}\]</div>
+
+<div class="eq" id="eq-1-22">\[b\rvert_{y = 0} = \frac{1}{1+\text{exp}\left( -\xi \right)}\tag{1.22}\]</div>
+<p>We will return to these expressions shortly. Faraday's law gives us the dimensionless current:</p>
+<div class="eq" id="eq-1-23">\[\psi = \left( \frac{\partial a}{\partial y} \right)\biggr\rvert_{y = 0} = - \left( \frac{\partial b}{\partial y} \right)\biggr\rvert_{y = 0}\tag{1.23}\]</div>
+
+<h3 id="sec1-3">1.3 Solving for the Integral Relation of the Current</h3>
+<p>We can solve Fick's law by taking Laplace transforms relative to $\tau$. The Laplace transform of $a(y,\tau)$ is $\overline{a}(y,s)$. The Laplace transform of Equation <a href="#eq-1-17">1.17</a> is:</p>
+<div class="eq" id="eq-1-24">\[s\overline{a}-a\rvert_{\tau = 0} = \frac{\partial^2 \overline{a}}{\partial y^2}\tag{1.24}\]</div>
+<p>Applying our initial condition simplifies the equation to:</p>
+<div class="eq" id="eq-1-25">\[s\overline{a}-1 = \frac{\partial^2 \overline{a}}{\partial y^2}\tag{1.25}\]</div>
+<p>Playing the same game with Equation <a href="#eq-1-18">1.18</a> gives:</p>
+<div class="eq" id="eq-1-26">\[s\overline{b} = \frac{\partial^2 \overline{b}}{\partial y^2}\tag{1.26}\]</div>
+<p>We've simplified the problem to solving second-order linear ODEs (relative to $y$ only). The general solutions for $\overline{a}$ and $\overline{b}$ are:</p>
+<div class="eq" id="eq-1-27">\[\overline{a} = \frac{1}{s}+c_1\text{exp}\left(-\sqrt{s}y \right)+c_2\text{exp}\left(\sqrt{s}y \right)\tag{1.27}\]</div>
+
+<div class="eq" id="eq-1-28">\[\overline{b} = c_3\text{exp}\left(-\sqrt{s}y \right)+c_4\text{exp}\left(\sqrt{s}y \right)\tag{1.28}\]</div>
+<p>To obey our semi-infinite limit (as $y$ gets large, $\overline{a} = 1/s$ and $\overline{b} = 0$), we set $c_2$ and $c_4$ to $0$:</p>
+<div class="eq" id="eq-1-29">\[\overline{a} = \frac{1}{s}+c_1\text{exp}\left(-\sqrt{s}y \right)\tag{1.29}\]</div>
+
+<div class="eq" id="eq-1-30">\[\overline{b} = c_3\text{exp}\left(-\sqrt{s}y \right)\tag{1.30}\]</div>
+<p>And from conservation of flux at the surface, we know that $c_3=-c_1$:</p>
+<div class="eq" id="eq-1-31">\[\overline{a} = \frac{1}{s}+c_1\text{exp}\left(-\sqrt{s}y \right)\tag{1.31}\]</div>
+
+<div class="eq" id="eq-1-32">\[\overline{b} = -c_1\text{exp}\left(-\sqrt{s}y \right)\tag{1.32}\]</div>
+<p>Note that by this point in solving Fick's law, we have only invoked the initial condition, semi-infinite condition, and flux balance. Thus, equations <a href="#eq-1-31">1.31</a> and <a href="#eq-1-32">1.32</a> are general to single-electron transfer with no assumptions made to electrode kinetics or technique. Faraday's law (equation <a href="#eq-1-23">1.23</a>) in Laplace space relates $c_1$ to the current. I'll show $a$ here since there's an extra term compared to $b$.</p>
+<div class="eq" id="eq-1-33">\[\overline{\psi} = \left( \frac{\partial \overline{a}}{\partial y} \right)\biggr\rvert_{y = 0} = -\sqrt{s} c_1, \quad \text{so} \quad c_1 = -\frac{\overline{\psi}}{\sqrt{s}}\tag{1.33}\]</div>
+<p>Plug $c_1$ into equation <a href="#eq-1-31">1.31</a>:</p>
+<div class="eq" id="eq-1-34">\[\overline{a} = \frac{1}{s} - \left(\frac{\overline{\psi}}{\sqrt{s}} \right) \text{exp}\left(- \sqrt{s}y \right)\tag{1.34}\]</div>
+<p>The surface concentration $\overline{a}$ is:</p>
+<div class="eq" id="eq-1-35">\[\overline{a}\rvert_{y = 0} = \frac{1}{s} - \left(\frac{\overline{\psi}}{\sqrt{s}} \right)\tag{1.35}\]</div>
+<p>We can come back to the original space through inverse Laplace transform.</p>
+<div class="eq" id="eq-1-36">\[\mathscr{L}^{-1}\left (\overline{a}\rvert_{y = 0} \right) = a\rvert_{y = 0} = 1 - \frac{1}{\sqrt{\pi}} \int_{0}^{\tau} \frac{\psi(\eta)}{\sqrt{\tau - \eta}} d\eta\tag{1.36}\]</div>
+<p>The integral term follows from the convolution theorem for Laplace transforms:</p>
+<div class="eq" id="eq-1-37">\[\mathscr{L}^{-1}\left (\overline{f}(s) \overline{g}(s) \right) = \int_{0}^{t} f(\eta)g(t-\eta)d\eta = \int_{0}^{t} f(t-\eta)g(\eta)d\eta\tag{1.37}\]</div>
+<p>$\eta$ is a dummy variable that is lost when the definite integral is evaluated. This is one of the key insights from the derivation: <strong>the concentrations of $\pmb{A}$ and $\pmb{B}$ at the electrode surface can be related to the convolution product of the current with the function $\pmb{1/\sqrt{\pi t}}$</strong>. Playing the same game with $\overline{b}$ gives:</p>
+<div class="eq" id="eq-1-38">\[\overline{b} =  \left(\frac{\overline{\psi}}{\sqrt{s}} \right) \text{exp}\left(- \sqrt{s}y \right)\tag{1.38}\]</div>
+
+<div class="eq" id="eq-1-39">\[\overline{b}\rvert_{y = 0} =  \frac{\overline{\psi}}{\sqrt{s}}\tag{1.39}\]</div>
+
+<div class="eq" id="eq-1-40">\[b\rvert_{y = 0} =  \frac{1}{\sqrt{\pi}} \int_{0}^{\tau} \frac{\psi(\eta)}{\sqrt{\tau - \eta}} d\eta\tag{1.40}\]</div>
+<p>Equations <a href="#eq-1-36">1.36</a> and <a href="#eq-1-40">1.40</a> still carry no assumption about electrode kinetics or about how the potential varies in time. The reaction need not be Nernstian, and the potential need not even be linearly scanned.</p>
+<p>Only now do we assume Nernstian ET. Applying equation <a href="#eq-1-22">1.22</a>, derived above, to equation <a href="#eq-1-40">1.40</a> gives us the current response for the entire voltammogram:</p>
+<div class="eq" id="eq-1-41">\[\boxed{\frac{1}{\sqrt{\pi}} \int_{0}^{\tau} \frac{\psi(\eta)}{\sqrt{\tau - \eta}} d\eta = \frac{1}{1+\text{exp}(-\xi)}}\tag{1.41}\]</div>
+<p>Dimensionless time and potential are of course related, since we're linearly scanning the potential for the experiment</p>
+<div class="eq" id="eq-1-42">\[\xi_c = -u_i + \tau, \quad 0 \leq \tau \leq \tau_s\tag{1.42}\]</div>
+
+<div class="eq" id="eq-1-43">\[\xi_a = -u_f - (\tau - \tau_s), \quad \tau_s \leq \tau \leq 2\tau_s\tag{1.43}\]</div>
+<p>So we can express the current-potential curve of the cathodic (forward) scan as:</p>
+<div class="eq" id="eq-1-44">\[\frac{1}{\sqrt{\pi}} \int_{-u_i}^{\xi} \frac{\psi(\eta)}{\sqrt{\xi - \eta}} d\eta = \frac{1}{1+\text{exp}(-\xi)}\tag{1.44}\]</div>
+<p>As the starting potential is made more and more positive of the standard potential (true in any practical experiment), $u_i$ approaches infinity, and so we can write:</p>
+<div class="eq" id="eq-1-45">\[\boxed{\frac{1}{\sqrt{\pi}} \int_{-\infty}^{\xi} \frac{\psi(\eta)}{\sqrt{\xi - \eta}} d\eta = \frac{1}{1+\text{exp}(-\xi)}}\tag{1.45}\]</div>
+<p>Meanwhile, still using equation <a href="#eq-1-41">1.41</a>, the reverse scan can be written in two portions:</p>
+<div class="eq" id="eq-1-46">\[\frac{1}{\sqrt{\pi}} \int_{0}^{\tau_s} \frac{\psi_c(\eta)}{\sqrt{\tau - \eta}} d\eta + \frac{1}{\sqrt{\pi}} \int_{\tau_s}^{\tau} \frac{\psi_a(\eta)}{\sqrt{\tau - \eta}} d\eta = \frac{1}{1+\text{exp}(-\xi_a)}\tag{1.46}\]</div>
+<p>Where the subscripts $a$ and $c$ denote the anodic (reverse) and cathodic (forward) scans. We can rewrite to play with the bounds of integration:</p>
+<div class="eq" id="eq-1-47">\[\frac{1}{\sqrt{\pi}} \int_{0}^{\tau} \frac{\psi_c(\eta)}{\sqrt{\tau - \eta}} d\eta + \frac{1}{\sqrt{\pi}} \int_{\tau_s}^{\tau} \frac{\left( \psi_a(\eta)-\psi_c(\eta) \right)}{\sqrt{\tau - \eta}} d\eta = \frac{1}{1+\text{exp}(-\xi_a)}\tag{1.47}\]</div>
+<p>The leftmost term tends to $1$ as the inversion potential is made far negative of the standard potential (i.e., normalized surface concentration of $B$ tends to $1$), which simplifies Equation <a href="#eq-1-47">1.47</a> to:</p>
+<div class="eq" id="eq-1-48">\[\frac{1}{\sqrt{\pi}} \int_{\tau_s}^{\tau} \frac{\left( \psi_a(\eta)-\psi_c(\eta) \right)}{\sqrt{\tau - \eta}} d\eta = \frac{1}{1+\text{exp}(-\xi_a)}-1 = - \frac{1}{1+\text{exp}(\xi_a)}\tag{1.48}\]</div>
+<p>Again, recasting the bounds with respect to potential rather than time, we have:<sup class="fnmark"><a href="#fn2" id="fnref2">&Dagger;</a></sup></p>
+<div class="eq" id="eq-1-49">\[\boxed{\frac{1}{\sqrt{\pi}} \int_{\xi_a}^{\infty} \frac{\left( \psi_a(\eta)-\psi_c(\eta) \right)}{\sqrt{\eta - \xi_a}} d\eta = - \frac{1}{1+\text{exp}(\xi_a)}}\tag{1.49}\]</div>
+<figure id="fig1"><img src="ForwardScan.png" style="width:100%" alt="Figure 1"><figcaption>Figure 1: Forward (cathodic) scan for single outer-sphere Nernstian electron transfer. Note that $\xi = 1$ at 25 °C corresponds to 25.7 mV (thermal voltage).</figcaption></figure>
+<p>This is identical to Equation <a href="#eq-1-45">1.45</a> after reflection about the y-axis, reflection about the x-axis, and vertical translation by the cathodic baseline. We can thus focus our attention on solving for the cathodic scan, since the anodic scan is easily obtained after. The integral relation of the dimensionless current to the dimensionless potential is a tricky form to solve (different methods of numerical solution were the subject of dozens of papers between the 1940s and 1980s). This integral equation has been solved numerically, and the result for equation <a href="#eq-1-45">1.45</a> can be written as the explicit expression</p>
+<div class="eq" id="eq-1-50">\[\psi(\xi) = \frac{1}{2\sqrt{\pi}} \int_{0}^{\infty} \frac{d\zeta}{\text{cosh}^2 \left( \frac{\xi - \zeta^2}{2} \right)}\tag{1.50}\]</div>
+<p>If we plot equation <a href="#eq-1-50">1.50</a> (<a href="#fig1">Figure 1</a>), we find that the peak height $\psi_p$ is 0.446, occurring at $\xi_p = 1.11$. In dimensional variables, this means that:</p>
+<div class="eq" id="eq-1-51">\[j_p = 0.446Fc_{A, bulk}\sqrt{f \nu D}\tag{1.51}\]</div>
+
+<div class="eq" id="eq-1-52">\[E_p = E^{0} - \frac{1.11}{f}\tag{1.52}\]</div>
+<p>And that is the Randles–Ševčík equation, derived! The peak current is proportional to the concentration of $A$ in solution and proportional to the square root of the scan rate $\nu$. Plotting the reverse scan in addition to the forward scan, we can further find that the distance between anodic and cathodic peak potentials is 2.22 thermal voltages (<a href="#fig2">Figure 2</a>).</p>
+<figure id="fig2"><img src="FullCV.png" style="width:100%" alt="Figure 2"><figcaption>Figure 2: Full CV for single outer-sphere Nernstian electron transfer. The reverse (anodic) trace is simply the forward (cathodic) trace reflected about the x-axis, reflected about the y-axis, and translated vertically by the cathodic baseline</figcaption></figure>
+<h3 id="sec1-4">1.4 Fick's Law vs. Nernst-Planck</h3>
+<p>Fick's law is the Nernst-Planck equation with the migration and convection terms neglected. With supporting electrolyte in large excess, the analyte carries a negligible fraction of the ionic current, so its migration can be ignored. The diffusion layer is microns thick while the double layer is nanometers thick, so electroneutrality holds over essentially the entire region we are describing. And in a quiescent solution at scan rates of a few mV/s or more, natural convection does not develop on the timescale of the experiment. For a single outer-sphere electron transfer, diffusion controls the current-potential response. In general, the choice between invoking Fick's law and the Nernst-Planck equation comes down to comparing the concentration, length, and time scales of the analyte with those of its surroundings.</p>
+<h2 id="sec2">2. Convolution of CVs</h2>
+
+<h3 id="sec2-1">2.1 Derivation of Convolutive Manipulation</h3>
+<p>As we saw in <a href="#sec1">Section 1</a>, the convolution product of the current with the function $1/\sqrt{\pi t}$ naturally falls out from transient linear and semi-infinite diffusion. If we dimensionalize equation <a href="#eq-1-36">1.36</a> we have:</p>
+<div class="eq" id="eq-2-1">\[\frac{c_A\rvert_{x = 0}}{c_{A, bulk}} = 1 - \frac{1}{\sqrt{\pi}} \int_{0}^{f \nu t} \frac{i}{FAc_{A, bulk}\sqrt{f \nu D}\sqrt{f \nu t - \eta}} d\eta\tag{2.1}\]</div>
+<p>Where $i$ is the current and $\eta$ is an integration variable like before. Substituting $\eta = f \nu \eta'$ so that the integration variable is dimensional time, $d\eta = f \nu   d\eta'$ and $\sqrt{f \nu t - \eta} = \sqrt{f \nu}\sqrt{t - \eta'}$. The factors of $f \nu$ cancel, leaving</p>
+<div class="eq" id="eq-2-2">\[\frac{c_A\rvert_{x = 0}}{c_{A, bulk}} = 1 - \frac{1}{FAc_{A, bulk}\sqrt{D}} \cdot \frac{1}{\sqrt{\pi}} \int_{0}^{t} \frac{i(\eta')}{\sqrt{t - \eta'}} d\eta'\tag{2.2}\]</div>
+<p>Where $I_1 = FAc_{A, bulk}\sqrt{D}$ is the limiting value of the convolution integral $I$ (defined below), reached when the potential is made so negative that the concentration of $A$ is zero at the electrode surface. Importantly, no assumption about the time dependence of $i$ was needed. We can now express the concentrations of $A$ and $B$ at the electrode surface:</p>
+<div class="eq" id="eq-2-3">\[\frac{c_A\rvert_{x = 0}}{c_{A, bulk}} = 1 - \frac{I}{I_1}\tag{2.3}\]</div>
+
+<div class="eq" id="eq-2-4">\[\frac{c_B\rvert_{x = 0}}{c_{A, bulk}} = \frac{I}{I_1}\tag{2.4}\]</div>
+<p>Where the convolution integral $I$ is:</p>
+<div class="eq" id="eq-2-5">\[\boxed{I = \frac{1}{\sqrt{\pi}} \int_{0}^{t} \frac{i}{\sqrt{t - \eta}} d\eta}\tag{2.5}\]</div>
+<p>Equation <a href="#eq-2-5">2.5</a> is powerful in that it provides a convolution transformation of CV data that leads to a sigmoidal i-E profile as we would normally see at an RDE. Furthermore, equations <a href="#eq-2-3">2.3</a> and <a href="#eq-2-4">2.4</a> have remarkable similarity to the electrode surface concentrations of $A$ and $B$ that we'd see in RDE voltammetry (RDEV):</p>
+<div class="eq" id="eq-2-6">\[\frac{c_A\rvert_{x = 0}}{c_{A, bulk}} = 1 - \frac{i}{i_l}\tag{2.6}\]</div>
+
+<div class="eq" id="eq-2-7">\[\frac{c_B\rvert_{x = 0}}{c_{A, bulk}} = \frac{i}{i_l}\tag{2.7}\]</div>
+<p>Where $i_l$ is the plateau current reached during RDEV at sufficiently negative potentials, which is given by the Levich equation (Bard and Faulkner, Section 9.3.2):</p>
+<div class="eq" id="eq-2-8">\[i_l = \frac{FAc_{A, bulk}D}{\delta} = 0.62FAc_{A, bulk}D^{2/3}\nu_{kin}^{-1/6}\omega_R^{1/2}\tag{2.8}\]</div>
+<p>Here $\delta$ is the diffusion layer thickness, $\nu_{kin}$ is the kinematic viscosity (not the scan rate $\nu$), and $\omega_R$ is the angular rotation rate.</p>
+<h3 id="sec2-2">2.2 Plotting the Convolved Voltammogram</h3>
+<p>For this section I'm using a CV of ferrocenemethanol (FcMeOH) on glassy carbon. Note that all plots from here on use the IUPAC convention (anodic currents positive).</p>
+<figure id="fig3"><img src="FcMeOH.png" style="width:80%" alt="Figure 3"><figcaption>Figure 3: CV of 1 mM FcMeOH + 0.1 M KCl on 5 mm glassy carbon disk. Scan rate = 10 mV/s. No correction for ohmic ($iR$) drop.</figcaption></figure>
+<p>For simplicity, the raw data were interpolated to evenly spaced points.<sup class="fnmark"><a href="#fn3" id="fnref3">&sect;</a></sup> I then used the following algorithm<sup class="cite"><a href="#ref4">4</a></sup> to evaluate the convolution integral (Equation <a href="#eq-2-5">2.5</a>):</p>
+<div class="eq" id="eq-2-9">\[I(k\Delta t)=\frac{1}{\sqrt{\pi}} \sum_{j=1}^{j=k} \frac{i(j\Delta t-\frac{1}{2}\Delta t)\sqrt{\Delta t}}{\sqrt{k-j+ \frac{1}{2} }}\tag{2.9}\]</div>
+<p>Where, as in equation <a href="#eq-2-1">2.1</a>, $i$ is the current. The result is shown in <a href="#fig4">Figure 4</a>, where we indeed observe an S-shaped I-E profile as we would normally see in RDE voltammetry (RDEV) or ultramicroelectrode voltammetry (UMEV). Again, this is because the convolved current is related to surface concentrations, thereby allowing us to eliminate the effect of a decreasing concentration gradient.</p>
+<figure id="fig4"><img src="Convolution.png" style="width:90%" alt="Figure 4"><figcaption>Figure 4: Convolved CV of 1 mM FcMeOH + 0.1 M KCl on 5 mm glassy carbon disk. Scan rate = 10 mV/s. No correction for ohmic ($iR$) drop. The original CV (<a href="#fig3">Figure 3</a>) is shown in the faded trace, though note that its y-axis corresponds to current in units of mA</figcaption></figure>
+<p>There are several electroanalytical benefits to working with convolved currents.</p>
+<ul><li>We have transformed data collected from a transient technique into a steady-state response. This affords the benefits of doing a normal CV while getting the benefits of working with a steady-state response.<sup class="cite"><a href="#ref5">5</a></sup></li><li>The data are less sensitive to sluggish electron transfer kinetics, such as to an electroactive species in a polymer layer.<sup class="cite"><a href="#ref6">6</a></sup></li><li>In some scenarios, RDEs and UMEs are unable to achieve steady-state conditions, such as in highly viscous liquids.<sup class="cite"><a href="#ref7">7</a></sup> Doing a standard CV on a macroelectrode is preferred here.</li><li><em>A priori</em> knowledge of the kinetic rate law is not needed for analysis, unlike in normal CVs. One of the first demonstrations that the transfer coefficient is potential-dependent was done using convolution voltammetry.<sup class="cite"><a href="#ref8">8</a></sup></li><li>The data are now much easier to correct for ohmic drop.<sup class="cite"><a href="#ref9">9</a></sup></li></ul>
+<p>Let's return to the two questions we started with! The current rises as Nernstian electron transfer converts more and more of the reactant at the surface. The current then peaks and decays because diffusion cannot resupply the surface fast enough across a growing depletion layer. Meanwhile, the reverse scan mirrors the forward scan because only the direction of the sweep and the identity of the reactant have changed; the diffusion equation is identical for both species, and the Nernst equation is symmetric in reactant and product about the standard potential. Everything else we derived, from the 57 mV peak separation to the sigmoid in <a href="#sec2">Section 2</a>, follows from the interplay of diffusion and Nernstian electron transfer.</p>
+<p>Of course, the foregoing derivation covers the ideal case of fast electron transfer and no coupled chemistry. In the regime of slow electron transfer, a rate law replaces the Nernst equation at the surface and the mirror symmetry breaks, though the integral relations in <a href="#sec1-3">Section 1.3</a> remain valid as no assumption was made about kinetics. When homogeneous chemistry is coupled to the electron transfer, reactions within the diffusion layer add kinetic terms to Fick's second law and the derivation must start over from the governing equations. The waveform is then governed by the ratio of reaction rate to diffusion rate, giving rise to a <a href="https://doi.org/10.1021/ic500658x">kinetic zone diagram</a> (e.g., Figure 3 of Rountree et al.). For a worked example of an ECEC mechanism (alternating electron-transfer and chemical steps), derived in the same spirit as this note, see the supporting information of <a href="https://doi.org/10.1021/acselectrochem.5c00278">our paper on molecularly catalyzed nitrate reduction</a>.</p>
+<h2 id="footnotes">Footnotes</h2>
+<p id="fn1" class="footnote">&dagger; Sav&eacute;ant defines inner-sphere electron transfer (ET) in the classical sense, in which ET is concerted with the breaking or formation of bonds.<sup class="cite"><a href="#ref1">1</a></sup> Bard and Faulkner define inner-sphere ET as involving &ldquo;a strong interaction&rdquo; of reactant or product with the electrode surface.<sup class="cite"><a href="#ref2">2</a></sup> Outer-sphere ET exhibits the opposite behavior: reactants, intermediates, and products do not interact strongly with the electrode surface, ET proceeds by tunneling across at least a monolayer of solvent, and the nuclear skeleton is unchanged. <a href="#fnref1">&#8617;</a></p>
+<p id="fn2" class="footnote">&Dagger; Appendix 7.1.2 of Sav&eacute;ant and Costentin<sup class="cite"><a href="#ref3">3</a></sup> prints this equation with the limits running from $\infty$ to $\xi_a$ and $\sqrt{\xi_a - \eta}$ in the denominator. Because $\xi_a$ decreases with time on the reverse scan, the change of variable gives $\tau - \eta = \eta' - \xi_a$ and $d\eta = -d\eta'$, so the limits swap and the quantity under the root changes sign, as written here. <a href="#fnref2">&#8617;</a></p>
+<p id="fn3" class="footnote">&sect; It's easier to convolve evenly spaced data. Whether interpolation is acceptable depends on the resolution of the data you originally collected and the level of error you consider acceptable due to the interpolation. CVs are collected with a relatively high frequency of data sampling, so interpolation introduces negligible error for the illustration here. <a href="#fnref3">&#8617;</a></p>
+<h2 id="refs">References</h2><ol class="refs">
+<li id="ref1">Sav&eacute;ant, J.-M.; Costentin, C. <em>Elements of Molecular and Biomolecular Electrochemistry: An Electrochemical Approach to Electron Transfer Chemistry</em>, 2nd ed.; Wiley: Hoboken, NJ, 2019; p 1 (Section 1.1).</li>
+<li id="ref2">Bard, A. J.; Faulkner, L. R. <em>Electrochemical Methods: Fundamentals and Applications</em>, 2nd ed.; Wiley: New York, 2001; p 116 (Section 3.6). See also Bard, A. J. Inner-Sphere Heterogeneous Electrode Reactions. Electrocatalysis and Photocatalysis: The Challenge. <em>J. Am. Chem. Soc.</em> <strong>2010</strong>, <em>132</em>, 7559&ndash;7567. <a href="https://doi.org/10.1021/ja101578m">DOI: 10.1021/ja101578m</a></li>
+<li id="ref3">Ref 1, p 443 (Appendix 7.1.2); ref 2, p 177 (Section 5.4).</li>
+<li id="ref4">Ref 2, p 249 (Section 6.7).</li>
+<li id="ref5">Bentley, C. L.; Bond, A. M.; Hollenkamp, A. F.; Mahon, P. J.; Zhang, J. Applications of Convolution Voltammetry in Electroanalytical Chemistry. <em>Anal. Chem.</em> <strong>2014</strong>, <em>86</em>, 2073&ndash;2081. <a href="https://doi.org/10.1021/ac4036422">DOI: 10.1021/ac4036422</a></li>
+<li id="ref6">Leddy, J.; Bard, A. J. Polymer Films on Electrodes. Part XII. Chronoamperometric and Rotating Disk Electrode Determination of the Mechanism of Mass Transport through Poly(vinyl ferrocene) Films. <em>J. Electroanal. Chem.</em> <strong>1985</strong>, <em>189</em>, 203&ndash;219. <a href="https://doi.org/10.1016/0368-1874(85)80068-X">DOI: 10.1016/0368-1874(85)80068-X</a></li>
+<li id="ref7">Bentley, C. L.; Bond, A. M.; Hollenkamp, A. F.; Mahon, P. J.; Zhang, J. Advantages Available in the Application of the Semi-Integral Electroanalysis Technique for the Determination of Diffusion Coefficients in the Highly Viscous Ionic Liquid 1-Methyl-3-octylimidazolium Hexafluorophosphate. <em>Anal. Chem.</em> <strong>2013</strong>, <em>85</em>, 2239&ndash;2245. <a href="https://doi.org/10.1021/ac303042r">DOI: 10.1021/ac303042r</a></li>
+<li id="ref8">Sav&eacute;ant, J. M.; Tessier, D. Convolution Potential Sweep Voltammetry. V. Determination of Charge Transfer Kinetics Deviating from the Butler&ndash;Volmer Behaviour. <em>J. Electroanal. Chem.</em> <strong>1975</strong>, <em>65</em>, 57&ndash;66. <a href="https://doi.org/10.1016/0368-1874(75)85105-7">DOI: 10.1016/0368-1874(75)85105-7</a></li>
+<li id="ref9">Imbeaux, J. C.; Sav&eacute;ant, J. M. Convolutive Potential Sweep Voltammetry. I. Introduction. <em>J. Electroanal. Chem.</em> <strong>1973</strong>, <em>44</em>, 169&ndash;187. <a href="https://doi.org/10.1016/S0022-0728(73)80244-X">DOI: 10.1016/S0022-0728(73)80244-X</a></li>
+</ol>
+
+      <p class="backlink"><a href="../">All notes</a></p>
+    </main>
+  </body>
+</html>
